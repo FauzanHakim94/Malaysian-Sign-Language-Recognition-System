@@ -1,1 +1,4 @@
-requirements.txt
+models
+ui_assets
+venv
+__pycache__

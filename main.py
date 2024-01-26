@@ -10,11 +10,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.uic import loadUi
 
-import ViewTab
-import RecordTab
-import LiveTest
+import ui.ViewTab as ViewTab
+import ui.RecordTabV2 as RecordTab
+import ui.LiveTest as LiveTest
 
-#alphabets = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y']
 alphabets = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y', 'Bapa', 'Emak', 'Melayu', 'Cina', 'India']
 rootPath = r'C:'
 datasetPath = "dataset"
@@ -27,12 +26,12 @@ class UI(QMainWindow):
         ##Set root path
         rootPath = os.path.dirname(os.path.abspath(__file__))
         ##load the ui file
-        loadUi("MSLRSGUI.ui", self)
+        loadUi("ui/MSLRSGUI.ui", self)
 
         ###TOP Layout
         self.mainLogo = self.findChild(QLabel, "mainLogo")
         #show logo
-        utemLogo = rootPath+"/supportGUI/UtemLogo.png"
+        utemLogo = rootPath+"/ui_assets/UtemLogo.png"
         self.pixmap = QPixmap(utemLogo)
         self.mainLogo.setPixmap(self.pixmap)
 
@@ -48,9 +47,9 @@ class UI(QMainWindow):
         ###BOTTOM Layout
         self.tabs = self.findChild(QTabWidget, "tabWidget")
         self.tabs.tabBarClicked.connect(self.tabClickedHandler)
-        RecordTab.VTab.init(self, rootPath, alphabets, datasetPath)
-        ViewTab.VTab.init(self, rootPath, datasetPath, alphabets)
-        LiveTest.LTab.init(self, rootPath, datasetPath, alphabets)
+        RecordTab.RTab.init(self, rootPath, alphabets, datasetPath)
+        # ViewTab.VTab.init(self, rootPath, datasetPath, alphabets)
+        # LiveTest.LTab.init(self, rootPath, datasetPath, alphabets)
 
         #show the app
         self.showMaximized()
@@ -71,16 +70,18 @@ class UI(QMainWindow):
     def tabClickedHandler(self, index):
         if index != 0:
             #close running thread on Record Tab
-            RecordTab.cameraButtonState = 0
-            RecordTab.VTab.threadState(self, RecordTab.cameraButtonState)
+            # RecordTab.cameraButtonState = 0
+            # RecordTab.VTab.threadState(self, RecordTab.cameraButtonState)
+            print(f'index!=0')
         if index != 1:
             pass
         if index != 2:
             pass
         if index != 3:
             #close running thread on Live Test
-            LiveTest.cameraButtonState = 0
-            LiveTest.LTab.threadState(self, LiveTest.cameraButtonState)
+            # LiveTest.cameraButtonState = 0
+            # LiveTest.LTab.threadState(self, LiveTest.cameraButtonState)
+            print(f'index!=3')
 
 def OnExitApp(user):
     global datasetPath
