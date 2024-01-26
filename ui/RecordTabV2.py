@@ -7,7 +7,7 @@ import os
 import time
 
 import ui.Message as Message
-import image_processing as IP
+import utils.ImageProcessing as IP
 
 class RTab:
     def init(self, rootPath, alphabets, datasetPath):
