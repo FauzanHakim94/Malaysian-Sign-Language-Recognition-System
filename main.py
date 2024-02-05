@@ -1,78 +1,71 @@
+import ui.RecordTab as RecordTab
+import ui.ViewTab as ViewTab
+import ui.LiveTest as LiveTest
+
 import os
 import sys
-import cv2
-import time
 import atexit
-from openpyxl import Workbook
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.uic import loadUi
 
-import ui.ViewTab as ViewTab
-import ui.RecordTabV2 as RecordTab
-import ui.LiveTest as LiveTest
-
-alphabets = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y', 'Bapa', 'Emak', 'Melayu', 'Cina', 'India']
-rootPath = r'C:'
-datasetPath = "dataset"
+TITLE = "Malaysian Sign Language Recognition"
+SUBTITLE = "SUPERVISOR: Assoc. Prof. Dr. Masrullizam Bin Mat Ibrahim"
+SUBTITLE2 = "DEVELEPOR: Muhammad Fauzan Bin Abdul Hakim"
+ALPHABETS = ['A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y', 'Bapa', 'Emak', 'Melayu', 'Cina', 'India']
+DATASET_PATH = "/dataset"
+GUI_PATH = "ui/MSLRSGUI.ui"
+MAIN_LOGO = "/ui_assets/UtemLogo.png"
 
 class UI(QMainWindow):
     def __init__(self):
-        global alphabets, rootPath, datasetPath
-
         super(UI,self).__init__()
-        ##Set root path
-        rootPath = os.path.dirname(os.path.abspath(__file__))
-        ##load the ui file
-        loadUi("ui/MSLRSGUI.ui", self)
+        loadUi(GUI_PATH, self)
 
-        ###TOP Layout
+        self.rootPath = os.path.dirname(os.path.abspath(__file__))
+        mainLogoPath = self.rootPath+MAIN_LOGO
+        datasetPath = self.rootPath+DATASET_PATH      
+
+        # Widget List
         self.mainLogo = self.findChild(QLabel, "mainLogo")
-        #show logo
-        utemLogo = rootPath+"/ui_assets/UtemLogo.png"
-        self.pixmap = QPixmap(utemLogo)
-        self.mainLogo.setPixmap(self.pixmap)
-
-        ###MIDDLE Layout
+        self.title = self.findChild(QLabel, "Title")        
+        self.subtitle = self.findChild(QLabel, "subTitle")
+        self.subtitle2 = self.findChild(QLabel, "subTitle2")                
         self.searchLineEdit = self.findChild(QLineEdit, "filePathEditLine")
         self.searchButton = self.findChild(QPushButton, "searchButton")
-        #widget connection
-        self.searchButton.clicked.connect(self.searchButtonClicker)
-        #display initial path
-        datasetPath = rootPath+"\dataset"
-        self.searchLineEdit.setText(datasetPath)
-
-        ###BOTTOM Layout
         self.tabs = self.findChild(QTabWidget, "tabWidget")
-        self.tabs.tabBarClicked.connect(self.tabClickedHandler)
-        RecordTab.RTab.init(self, rootPath, alphabets, datasetPath)
-        # ViewTab.VTab.init(self, rootPath, datasetPath, alphabets)
-        # LiveTest.LTab.init(self, rootPath, datasetPath, alphabets)
 
-        #show the app
+        # Widget Connection
+        self.searchButton.clicked.connect(self.searchButtonClicker)
+        self.tabs.tabBarClicked.connect(self.tabClickedHandler)
+
+        # Initial Display
+        self.pixmap = QPixmap(mainLogoPath)
+        self.mainLogo.setPixmap(self.pixmap)
+        self.searchLineEdit.setText(datasetPath)
+        self.title.setText(TITLE)
+        self.subtitle.setText(SUBTITLE)
+        self.subtitle2.setText(SUBTITLE2)
+
+        # Setup All Tabs
+        RecordTab.RTab.init(self, self.rootPath, ALPHABETS, datasetPath)
+        # ViewTab.VTab.init(self, ROOT_PATH, DATASET_PATH, ALPHABETS)
+        # LiveTest.LTab.init(self, ROOT_PATH, DATASET_PATH, ALPHABETS)
+
         self.showMaximized()
 
-    #file search function
-    def searchFilePath(self, rootPath, fileName):
-        for (root, dirs, files) in os.walk(rootPath, topdown=True):
-            if root.find(fileName) != -1:
-                break
-        return root
-
-    #when search button clicked
+    """when search button clicked"""
     def searchButtonClicker(self):
-        global rootPath
-        rootPath = str(QFileDialog.getExistingDirectory(self, 'Open File', rootPath))
-        self.searchLineEdit.setText(rootPath)
+        self.rootPath = str(QFileDialog.getExistingDirectory(self, 'Open File', self.rootPath))
+        self.searchLineEdit.setText(self.rootPath)
 
     def tabClickedHandler(self, index):
         if index != 0:
-            #close running thread on Record Tab
-            # RecordTab.cameraButtonState = 0
-            # RecordTab.VTab.threadState(self, RecordTab.cameraButtonState)
-            print(f'index!=0')
+            # Close running thread on Record Tab
+            RecordTab.cameraButtonState = 0
+            RecordTab.RTab.threadState(self, RecordTab.cameraButtonState)
         if index != 1:
             pass
         if index != 2:
@@ -83,16 +76,7 @@ class UI(QMainWindow):
             # LiveTest.LTab.threadState(self, LiveTest.cameraButtonState)
             print(f'index!=3')
 
-def OnExitApp(user):
-    global datasetPath
-    print(user, " exit Python application")
-    if ViewTab.excelFlag:
-        xb = ViewTab.wb
-        xb.save(datasetPath + "\View Image Label.xlsx")
-        print('manage to close excel')
-
-#initialize the app
+# Start the App
 app = QApplication(sys.argv)
 UIWindow = UI()
 app.exec_()
-atexit.register(OnExitApp, user='FZ')

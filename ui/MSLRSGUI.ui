@@ -43,7 +43,7 @@
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap resource="supportGUI/Logo.qrc">:/newPrefix/UtemLogo.png</pixmap>
+           <pixmap resource="../ui_assets/Logo.qrc">:/newPrefix/UtemLogo.png</pixmap>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -110,7 +110,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="subTitlle">
+         <widget class="QLabel" name="subTitle">
           <property name="text">
            <string>SUPERVISOR: Assoc. Prof. Dr. Masrullizam Bin Mat Ibrahim</string>
           </property>
@@ -120,7 +120,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="subTitle2">
           <property name="text">
            <string>STUDENT: Muhammad Fauzan Bin Abdul Hakim</string>
           </property>
@@ -1112,6 +1112,7 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
+  <include location="../ui_assets/Logo.qrc"/>
   <include location="supportGUI/Logo.qrc"/>
  </resources>
  <connections/>

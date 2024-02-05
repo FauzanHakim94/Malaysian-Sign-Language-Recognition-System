@@ -1,5 +1,6 @@
 __pycache__
 dataset
+landmark_dataset
 models
 ui_assets
 venv
